@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sethmina Electricians - Bakery Equipment Solutions</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1603532648955-039310d7845c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .map-container {
+            height: 300px;
+            width: 100%;
+        }
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        .cart-item:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-blue-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                <span class="text-xl font-bold">Sethmina Electricians</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-yellow-400 transition">Home</a>
+                <a href="#about" class="hover:text-yellow-400 transition">About</a>
+                <a href="#services" class="hover:text-yellow-400 transition">Services</a>
+                <a href="#products" class="hover:text-yellow-400 transition">Products</a>
+                <a href="#why-us" class="hover:text-yellow-400 transition">Why Choose Us</a>
+                <a href="#contact" class="hover:text-yellow-400 transition">Contact</a>
+                <button id="cart-button" class="relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-500 text-blue-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-4 md:hidden">
+                <button id="mobile-cart-button" class="relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="mobile-cart-count" class="absolute -top-2 -right-2 bg-yellow-500 text-blue-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+                <button class="focus:outline-none" id="menu-toggle">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-blue-700 px-4 py-2" id="mobile-menu">
+            <a href="#home" class="block py-2 hover:text-yellow-400 transition">Home</a>
+            <a href="#about" class="block py-2 hover:text-yellow-400 transition">About</a>
+            <a href="#services" class="block py-2 hover:text-yellow-400 transition">Services</a>
+            <a href="#products" class="block py-2 hover:text-yellow-400 transition">Products</a>
+            <a href="#why-us" class="block py-2 hover:text-yellow-400 transition">Why Choose Us</a>
+            <a href="#contact" class="block py-2 hover:text-yellow-400 transition">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-blue-800">Your Shopping Cart</h3>
+            <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="p-4">
+            <!-- Cart items will be added here dynamically -->
+            <div class="text-center text-gray-500 py-8">
+                <i class="fas fa-shopping-cart text-4xl mb-2"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex justify-between mb-4">
+                <span class="font-bold">Total:</span>
+                <span id="cart-total" class="font-bold">LKR 0.00</span>
+            </div>
+            <button id="checkout-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded transition">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-blue-800">Checkout</h3>
+                <button id="close-checkout" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <form id="checkout-form">
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700 font-bold mb-2">Full Name</label>
+                        <input type="text" id="checkout-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="block text-gray-700 font-bold mb-2">Phone Number</label>
+                        <input type="tel" id="checkout-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="block text-gray-700 font-bold mb-2">Delivery Address</label>
+                        <textarea id="checkout-address" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2">Payment Method</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="payment" value="cash" checked class="mr-2">
+                                <span>Cash on Delivery</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="payment" value="card" class="mr-2">
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded transition">
+                        Complete Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="order-confirmation" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 text-center">
+            <div class="text-green-500 text-5xl mb-4">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-blue-800 mb-2">Order Confirmed!</h3>
+            <p class="text-gray-600 mb-6">Thank you for your purchase. We'll contact you shortly to confirm your order details.</p>
+            <button id="close-confirmation" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-6 rounded transition">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero text-white py-20 md:py-32 flex items-center">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Your Trusted Partner for Bakery Equipment Solutions</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Expert repairs, quality parts, and professional service for all your bakery machinery needs.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#products" class="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-3 px-8 rounded-full transition inline-block">Shop Now</a>
+                <a href="#contact" class="bg-transparent hover:bg-white hover:text-blue-800 text-white border-2 border-white font-bold py-3 px-8 rounded-full transition inline-block">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">About Us</h2>
+                <div class="w-20 h-1 bg-yellow-500 mx-auto"></div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <img src="https://images.unsplash.com/photo-1581093450021-4a7360e9a9d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Technician working" class="rounded-lg shadow-xl w-full">
+                </div>
+                <div class="md:w-1/2">
+                    <p class="text-gray-700 mb-6 text-lg">
+                        <span class="text-blue-800 font-bold">Sethmina Electricians</span> is your premier partner for all bakery equipment needs. With over 10 years of experience, our team of seasoned technicians provides expert repair services for a wide range of bakery machinery.
+                    </p>
+                    <p class="text-gray-700 mb-6 text-lg">
+                        We are dedicated to delivering reliable and efficient solutions, ensuring your business runs smoothly without any interruptions to your production.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-blue-100 p-4 rounded-full">
+                            <i class="fas fa-check-circle text-blue-800 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-800">Certified Technicians</h3>
+                            <p class="text-gray-600">Skilled professionals with proper training</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Our Services</h2>
+                <div class="w-20 h-1 bg-yellow-500 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-white p-8 rounded-lg shadow-md transition duration-300">
+                    <div class="text-blue-800 mb-4">
+                        <i class="fas fa-tools text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-blue-800">Bakery Equipment Repairs</h3>
+                    <p class="text-gray-600">
+                        We specialize in repairing all types of bakery machinery, including large dough mixers, gas ovens, diesel ovens, electric ovens, bun dividers, packing machines, rice steamers, and pastry sheeters.
+                    </p>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card bg-white p-8 rounded-lg shadow-md transition duration-300">
+                    <div class="text-blue-800 mb-4">
+                        <i class="fas fa-shopping-cart text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-blue-800">Sales of Machinery & Spare Parts</h3>
+                    <p class="text-gray-600">
+                        We offer a comprehensive selection of both new and refurbished bakery machines and their genuine spare parts, ensuring long-lasting performance for your business.
+                    </p>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card bg-white p-8 rounded-lg shadow-md transition duration-300">
+                    <div class="text-blue-800 mb-4">
+                        <i class="fas fa-bolt text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-blue-800">Electrical Wiring & Repairs</h3>
+                    <p class="text-gray-600">
+                        Our expertise extends to professional electrical wiring and repair services for homes and commercial establishments, ensuring safety and reliability.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Service Area -->
+            <div class="mt-16 bg-white p-8 rounded-lg shadow-md">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-bold text-blue-800 mb-4">Service Area</h3>
+                        <p class="text-gray-700 text-lg">
+                            We offer our services island-wide. No matter where you are located in Sri Lanka, our expert technicians are ready to assist you at your doorstep.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="map-container bg-gray-200 rounded-lg overflow-hidden">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d505484.8080687101!2d79.69539395!3d7.8572635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13da4b400e2d38c!2sSri%20Lanka!5e0!3m2!1sen!2sus!4v1689873039493!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Products for Sale</h2>
+                <div class="w-20 h-1 bg-yellow-500 mx-auto"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                    Explore our wide range of new and refurbished bakery machines and genuine spare parts. Find the perfect solution for your business with our easy-to-use online store.
+                </p>
+            </div>
+
+            <!-- Products Banner -->
+            <div class="mb-12 rounded-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Bakery Equipment Collection" class="w-full h-auto">
+            </div>
+
+            <!-- Product Categories -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-blue-800 mb-4">Browse Categories</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="category-btn bg-blue-800 text-white px-4 py-2 rounded-full hover:bg-blue-900 transition" data-category="all">All Products</button>
+                    <button class="category-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 transition" data-category="machines">Machines</button>
+                    <button class="category-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 transition" data-category="parts">Spare Parts</button>
+                    <button class="category-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 transition" data-category="refurbished">Refurbished</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Product 1 -->
+                <div class="product-card bg-white p-4 rounded-lg shadow-md transition duration-300" data-category="machines">
+                    <div class="bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1603532648955-039310d7845c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Industrial Dough Mixer" class="w-full h-48 object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-800 mb-1">Industrial Dough Mixer</h3>
+                    <p class="text-gray-600 text-sm mb-2">Capacity: 50kg | Power: 5.5kW</p>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-lg font-bold text-blue-800">LKR 450,000</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">In Stock</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="add-to-cart bg-blue-800 hover:bg-blue-900 text-white py-2 px-4 rounded-lg transition flex-1" data-id="1" data-name="Industrial Dough Mixer" data-price="450000" data-image="https://images.unsplash.com/photo-1603532648955-039310d7845c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                        <button class="buy-now bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded-lg transition" data-id="1" data-name="Industrial Dough Mixer" data-price="450000" data-image="https://images.unsplash.com/photo-1603532648955-039310d7845c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card bg-white p-4 rounded-lg shadow-md transition duration-300" data-category="machines">
+                    <div class="bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Commercial Gas Oven" class="w-full h-48 object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-800 mb-1">Commercial Gas Oven</h3>
+                    <p class="text-gray-600 text-sm mb-2">6 Trays | Thermostat Control</p>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-lg font-bold text-blue-800">LKR 320,000</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">In Stock</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="add-to-cart bg-blue-800 hover:bg-blue-900 text-white py-2 px-4 rounded-lg transition flex-1" data-id="2" data-name="Commercial Gas Oven" data-price="320000" data-image="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80">
+                            Add to Cart
+                        </button>
+                        <button class="buy-now bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded-lg transition" data-id="2" data-name="Commercial Gas Oven" data-price="320000" data-image="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card bg-white p-4 rounded-lg shadow-md transition duration-300" data-category="refurbished">
+                    <div class="bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Refurbished Bun Divider" class="w-full h-48 object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-800 mb-1">Refurbished Bun Divider</h3>
+                    <p class="text-gray-600 text-sm mb-2">Output: 1200 buns/hour | Like New</p>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-lg font-bold text-blue-800">LKR 280,000</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">In Stock</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="add-to-cart bg-blue-800 hover:bg-blue-900 text-white py-2 px-4 rounded-lg transition flex-1" data-id="3" data-name="Refurbished Bun Divider" data-price="280000" data-image="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                        <button class="buy-now bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded-lg transition" data-id="3" data-name="Refurbished Bun Divider" data-price="280000" data-image="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card bg-white p-4 rounded-lg shadow-md transition duration-300" data-category="parts">
+                    <div class="bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1581093450021-4a7360e9a9d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Oven Heating Elements" class="w-full h-48 object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-800 mb-1">Oven Heating Elements</h3>
+                    <p class="text-gray-600 text-sm mb-2">Set of 3 | 220V | 2000W each</p>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-lg font-bold text-blue-800">LKR 12,500</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">In Stock</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="add-to-cart bg-blue-800 hover:bg-blue-900 text-white py-2 px-4 rounded-lg transition flex-1" data-id="4" data-name="Oven Heating Elements" data-price="12500" data-image="https://images.unsplash.com/photo-1581093450021-4a7360e9a9d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                        <button class="buy-now bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-2 px-4 rounded-lg transition" data-id="4" data-name="Oven Heating Elements" data-price="12500" data-image="https://images.unsplash.com/photo-1581093450021-4a7360e9a9d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Why Choose Us</h2>
+                <div class="w-20 h-1 bg-yellow-500 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-blue-50 p-6 rounded-lg text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-check text-blue-800 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-blue-800">10+ Years Experience</h3>
+                    <p class="text-gray-600">Our skilled technicians have extensive experience in the field.</p>
+                </div>
+                
+                <div class="bg-blue-50 p-6 rounded-lg text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marked-alt text-blue-800 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-blue-800">Island-wide Service</h3>
+                    <p class="text-gray-600">We provide our services across the entire country.</p>
+                </div>
+                
+                <div class="bg-blue-50 p-6 rounded-lg text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-medal text-blue-800 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-blue-800">Quality & Reliability</h3>
+                    <p class="text-gray-600">Committed to high-quality, reliable, and timely services.</p>
+                </div>
+                
+                <div class="bg-blue-50 p-6 rounded-lg text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cogs text-blue-800 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-blue-800">Comprehensive Solutions</h3>
+                    <p class="text-gray-600">From repairs to sales and wiring, we are your one-stop solution.</p>
+                </div>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-center text-blue-800 mb-8">What Our Clients Say</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center mb-4">
+                            <div class="text-yellow-500 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">"Sethmina Electricians saved our bakery when our main oven broke down. They arrived quickly and had us back in business the same day. Highly recommended!"</p>
+                        <div class="flex items-center">
+                            <div class="bg-blue-200 w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-blue-800 font-bold">RK</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800">Ranjith Kumar</h4>
+                                <p class="text-sm text-gray-600">Colombo Bakery</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center mb-4">
+                            <div class="text-yellow-500 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">"We've been using their services for years. Their technicians are knowledgeable and always provide excellent service. They've never let us down."</p>
+                        <div class="flex items-center">
+                            <div class="bg-blue-200 w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-blue-800 font-bold">SP</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800">Sunil Perera</h4>
+                                <p class="text-sm text-gray-600">Kandy Bread House</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-blue-800 text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+                <div class="w-20 h-1 bg-yellow-500 mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <h3 class="text-xl font-bold mb-4">For expert service and reliable solutions, contact us today.</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-yellow-400"></i>
+                            <div>
+                                <h4 class="font-bold">Phone</h4>
+                                <p>076 889 5156</p>
+                                <p>076 889 5197</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3 text-yellow-400"></i>
+                            <div>
+                                <h4 class="font-bold">Email</h4>
+                                <p>sethminaelectricians@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-yellow-400"></i>
+                            <div>
+                                <h4 class="font-bold">Service Area</h4>
+                                <p>Island-wide service across Sri Lanka</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="text-xl font-bold mb-4">Business Hours</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Monday - Friday</span>
+                                <span>8:00 AM - 5:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Saturday</span>
+                                <span>8:00 AM - 5:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Sunday</span>
+                                <span>8:00 AM - 5:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <form class="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
+                        <div class="mb-4">
+                            <label for="name" class="block font-bold mb-2">Your Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="phone" class="block font-bold mb-2">Phone Number</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block font-bold mb-2">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block font-bold mb-2">Your Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-3 px-6 rounded-lg transition w-full">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Sethmina Electricians</span>
+                    </div>
+                    <p class="mt-2 text-blue-200">Your Trusted Partner for Bakery Equipment Solutions</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-blue-200 hover:text-white transition">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#" class="text-blue-200 hover:text-white transition">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                    <a href="#" class="text-blue-200 hover:text-white transition">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-6 pt-6 text-center text-blue-200">
+                <p>&copy; 2023 Sethmina Electricians. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-blue-800 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hidden">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Shopping Cart Functionality
+        let cart = [];
+        
+        // Initialize cart from localStorage if available
+        if (localStorage.getItem('cart')) {
+            cart = JSON.parse(localStorage.getItem('cart'));
+            updateCartCount();
+        }
+        
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Cart button functionality
+        document.getElementById('cart-button').addEventListener('click', toggleCart);
+        document.getElementById('mobile-cart-button').addEventListener('click', toggleCart);
+        document.getElementById('close-cart').addEventListener('click', toggleCart);
+        
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            cartSidebar.classList.toggle('translate-x-full');
+            renderCartItems();
+        }
+        
+        // Add to cart buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const price = parseFloat(this.getAttribute('data-price'));
+                const image = this.getAttribute('data-image');
+                
+                addToCart(id, name, price, image);
+            });
+        });
+        
+        // Buy now buttons
+        document.querySelectorAll('.buy-now').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const price = parseFloat(this.getAttribute('data-price'));
+                const image = this.getAttribute('data-image');
+                
+                // Clear cart and add this single item
+                cart = [{ id, name, price, image, quantity: 1 }];
+                updateCart();
+                toggleCart();
+                document.getElementById('checkout-modal').classList.remove('hidden');
+            });
+        });
+        
+        // Category filter buttons
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-800', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-800');
+                });
+                
+                this.classList.remove('bg-gray-200', 'text-gray-800');
+                this.classList.add('bg-blue-800', 'text-white');
+                
+                // Filter products
+                document.querySelectorAll('.product-card').forEach(product => {
+                    if (category === 'all' || product.getAttribute('data-category') === category) {
+                        product.classList.remove('hidden');
+                    } else {
+                        product.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        // Checkout functionality
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            if (cart.length > 0) {
+                document.getElementById('checkout-modal').classList.remove('hidden');
+            } else {
+                alert('Your cart is empty. Please add some products first.');
+            }
+        });
+        
+        document.getElementById('close-checkout').addEventListener('click', function() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        });
+        
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real application, you would send this data to your server
+            const name = document.getElementById('checkout-name').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const address = document.getElementById('checkout-address').value;
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            
+            // Show confirmation
+            document.getElementById('checkout-modal').classList.add('hidden');
+            document.getElementById('order-confirmation').classList.remove('hidden');
+            
+            // Clear cart
+            cart = [];
+            updateCart();
+        });
+        
+        document.getElementById('close-confirmation').addEventListener('click', function() {
+            document.getElementById('order-confirmation').classList.add('hidden');
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // Form submission (basic example)
+        const contactForm = document.querySelector('form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message! We will contact you soon.');
+                this.reset();
+            });
+        }
+        
+        // Cart functions
+        function addToCart(id, name, price, image) {
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price, image, quantity: 1 });
+            }
+            
+            updateCart();
+            
+            // Show feedback
+            const feedback = document.createElement('div');
+            feedback.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
+            feedback.textContent = `${name} added to cart`;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 2000);
+        }
+        
+        function updateCart() {
+            updateCartCount();
+            renderCartItems();
+            saveCartToLocalStorage();
+        }
+        
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('mobile-cart-count').textContent = count;
+        }
+        
+        function renderCartItems() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-shopping-cart text-4xl mb-2"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                document.getElementById('cart-total').textContent = 'LKR 0.00';
+                return;
+            }
+            
+            let itemsHTML = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                itemsHTML += `
+                    <div class="cart-item flex items-center py-4 border-b border-gray-200">
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden mr-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-blue-800">${item.name}</h4>
+                            <div class="flex justify-between items-center mt-1">
+                                <span class="text-gray-600">LKR ${item.price.toLocaleString()}</span>
+                                <div class="flex items-center">
+                                    <button class="decrease-quantity text-gray-500 hover:text-blue-800" data-index="${index}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="mx-2 w-8 text-center">${item.quantity}</span>
+                                    <button class="increase-quantity text-gray-500 hover:text-blue-800" data-index="${index}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="remove-item ml-4 text-red-500 hover:text-red-700" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            cartItemsContainer.innerHTML = itemsHTML;
+            document.getElementById('cart-total').textContent = `LKR ${total.toLocaleString()}`;
+            
+            // Add event listeners to quantity buttons
+            document.querySelectorAll('.decrease-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    if (cart[index].quantity > 1) {
+                        cart[index].quantity -= 1;
+                    } else {
+                        cart.splice(index, 1);
+                    }
+                    updateCart();
+                });
+            });
+            
+            document.querySelectorAll('.increase-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    cart[index].quantity += 1;
+                    updateCart();
+                });
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    cart.splice(index, 1);
+                    updateCart();
+                });
+            });
+        }
+        
+        function saveCartToLocalStorage() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+    </script>
+</body>
+</html>
